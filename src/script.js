@@ -9,11 +9,10 @@ import fragmentShader from '../shaders/fragmentShader.glsl'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-
 import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
 import { DotScreenShader } from './CustomShader.js';
-console.log(smallVertexShader)
-    // Debug
+
+// Debug
 const gui = new dat.GUI()
 
 // Canvas
