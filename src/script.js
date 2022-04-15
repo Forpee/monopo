@@ -2,10 +2,10 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import smallVertexShader from '../shaders/smallVertexShader.glsl'
-import smallFragmentShader from '../shaders/smallFragmentShader.glsl'
-import vertexShader from '../shaders/vertexShader.glsl';
-import fragmentShader from '../shaders/fragmentShader.glsl'
+import smallVertexShader from './shaders/smallVertexShader.glsl'
+import smallFragmentShader from './shaders/smallFragmentShader.glsl'
+import vertexShader from './shaders/vertexShader.glsl';
+import fragmentShader from './shaders/fragmentShader.glsl'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
@@ -121,8 +121,11 @@ composer.addPass(new RenderPass(scene, camera));
 const effect1 = new ShaderPass(DotScreenShader);
 effect1.uniforms['scale'].value = 4;
 composer.addPass(effect1);
+
 renderer.setSize(sizes.width, sizes.height)
+
 composer.setSize(sizes.width, sizes.height)
+
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
