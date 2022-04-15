@@ -42,10 +42,12 @@ mat2 rotate2D(float angle){
 }
 
 void main(){
+    // colors
     vec3 baseFirst=vec3(120./255.,158./255.,113./255.);
     vec3 accent=vec3(0.,0.,0.);
     vec3 baseSecond=vec3(224./255.,148./255.,66./255.);
     vec3 baseThird=vec3(232./255.,201./255.,73./255.);
+    
     float n=noise(vPosition+time);
     vec2 baseUV=rotate2D(n)*vPosition.xy*.1;
     float basePattern=line(baseUV,.2);

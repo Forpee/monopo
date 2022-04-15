@@ -2,14 +2,15 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import smallVertexShader from './shaders/smallVertexShader.glsl'
-import smallFragmentShader from './shaders/smallFragmentShader.glsl'
-import vertexShader from './shaders/vertexShader.glsl';
-import fragmentShader from './shaders/fragmentShader.glsl'
+
+import smallVertexShader from './shaders/SmallSphere/smallVertexShader.glsl'
+import smallFragmentShader from './shaders/SmallSphere/smallFragmentShader.glsl'
+import vertexShader from './shaders/BigSphere/vertexShader.glsl';
+import fragmentShader from './shaders/BigSphere/fragmentShader.glsl'
+
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
 import { DotScreenShader } from './CustomShader.js';
 
 // Debug
@@ -21,10 +22,7 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-// Objects
-const geometry = new THREE.SphereBufferGeometry(1.5, 128, 128);
-
-// Materials
+//???
 const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
     format: THREE.RGBAFormat,
     generateMipmaps: true,
@@ -32,9 +30,13 @@ const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
     encoding: THREE.sRGBEncoding
 })
 
-
-
+///???
 const cubeCamera = new THREE.CubeCamera(0.1, 10, cubeRenderTarget)
+
+// Large Sphere
+const geometry = new THREE.SphereBufferGeometry(1.5, 128, 128);
+
+// Materials
 const material = new THREE.ShaderMaterial({
     uniforms: {
         time: { value: 0.0 },
@@ -43,13 +45,14 @@ const material = new THREE.ShaderMaterial({
     fragmentShader,
     side: THREE.DoubleSide,
 })
-material.color = new THREE.Color(0xff0000)
 
 // Mesh
 const sphere = new THREE.Mesh(geometry, material)
 scene.add(sphere)
 
+//Small Sphere
 const smallSphereGeo = new THREE.SphereBufferGeometry(0.1, 128, 128)
+
 const smallSphereMat = new THREE.ShaderMaterial({
     uniforms: {
         time: { value: 0 },
@@ -60,15 +63,19 @@ const smallSphereMat = new THREE.ShaderMaterial({
 })
 
 const smallSphere = new THREE.Mesh(smallSphereGeo, smallSphereMat)
-smallSphere.position.set(0, 0, 1.7)
+
+smallSphere.position.set(0, 0, 0)
+
 scene.add(smallSphere)
 
 // Lights
 
 const pointLight = new THREE.PointLight(0xffffff, 0.1)
+
 pointLight.position.x = 2
 pointLight.position.y = 3
 pointLight.position.z = 4
+
 scene.add(pointLight)
 
 /**
@@ -102,10 +109,10 @@ window.addEventListener('resize', () => {
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
-camera.position.z = 2
+camera.position.z = 0.5
 scene.add(camera)
 
-
+// controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
@@ -115,6 +122,7 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+// Postprocessing
 let composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
@@ -122,10 +130,9 @@ const effect1 = new ShaderPass(DotScreenShader);
 effect1.uniforms['scale'].value = 4;
 composer.addPass(effect1);
 
-renderer.setSize(sizes.width, sizes.height)
-
 composer.setSize(sizes.width, sizes.height)
 
+renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
@@ -138,21 +145,20 @@ const tick = () => {
 
     const elapsedTime = clock.getElapsedTime()
     material.uniforms.time.value = elapsedTime
-        // Update objects
-        // sphere.rotation.y = .5 * elapsedTime
 
     // Update Orbital Controls
     controls.update()
 
-
     // Render
-
+    //Something to do with WebGLCubeRenderTarget
+    //Looks like a common pattern to render two scenes???
     composer.render(scene, camera)
     smallSphere.visible = false;
     cubeCamera.update(renderer, scene)
     smallSphere.visible = true;
     smallSphereMat.uniforms.tCube.value = cubeRenderTarget.texture
-        // Call tick again on the next frame
+
+    // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
 
