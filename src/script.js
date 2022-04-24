@@ -51,7 +51,7 @@ const sphere = new THREE.Mesh(geometry, material)
 scene.add(sphere)
 
 //Small Sphere
-const smallSphereGeo = new THREE.SphereBufferGeometry(0.1, 128, 128)
+const smallSphereGeo = new THREE.SphereBufferGeometry(0.2, 128, 128)
 
 const smallSphereMat = new THREE.ShaderMaterial({
     uniforms: {
@@ -148,6 +148,8 @@ const tick = () => {
 
     // Update Orbital Controls
     controls.update()
+    // sphere.rotation.y += 0.008
+    sphere.rotation.y += 0.008
 
     // Render
     //Something to do with WebGLCubeRenderTarget
@@ -157,6 +159,8 @@ const tick = () => {
     cubeCamera.update(renderer, scene)
     smallSphere.visible = true;
     smallSphereMat.uniforms.tCube.value = cubeRenderTarget.texture
+
+    
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)

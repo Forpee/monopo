@@ -50,6 +50,7 @@ void main(){
     
     float n=noise(vPosition+time);
     vec2 baseUV=rotate2D(n)*vPosition.xy*.1;
+
     float basePattern=line(baseUV,.2);
     float secondPattern=line(baseUV,.1);
     
