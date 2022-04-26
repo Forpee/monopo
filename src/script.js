@@ -3,18 +3,52 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+
+import { DotScreenShader } from './CustomShader.js';
+
 import smallVertexShader from './shaders/SmallSphere/smallVertexShader.glsl'
 import smallFragmentShader from './shaders/SmallSphere/smallFragmentShader.glsl'
 import vertexShader from './shaders/BigSphere/vertexShader.glsl';
 import fragmentShader from './shaders/BigSphere/fragmentShader.glsl'
 
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { DotScreenShader } from './CustomShader.js';
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if(result){
+        var r= parseInt(result[1], 16);
+        var g= parseInt(result[2], 16);
+        var b= parseInt(result[3], 16);
+        return [r,g,b];//return 23,14,45 -> reformat if needed 
+    } 
+    return null;
+  }
 
+let baseColor = new THREE.Vector3(120, 158, 113);
+let accentColor = new THREE.Vector3(0, 0, 0);
+let secondColor = new THREE.Vector3(224, 148, 66);
 // Debug
+const parameters = {
+    baseColor: "#789E71",
+    accentColor: "#000000",
+    secondColor: "#E09442",
+}
 const gui = new dat.GUI()
+
+gui.addColor(parameters, 'baseColor').onChange(()=> {
+    baseColor = new THREE.Vector3(...hexToRgb(parameters.baseColor))
+    material.uniforms.uBaseColor.value = baseColor
+})
+gui.addColor(parameters, 'accentColor').onChange(()=> {
+    accentColor = new THREE.Vector3(...hexToRgb(parameters.accentColor))
+    material.uniforms.uAccentColor.value = accentColor
+})
+gui.addColor(parameters, 'secondColor').onChange(()=> {
+    secondColor = new THREE.Vector3(...hexToRgb(parameters.secondColor))
+    material.uniforms.uSecondColor.value = secondColor
+})
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -40,6 +74,9 @@ const geometry = new THREE.SphereBufferGeometry(1.5, 128, 128);
 const material = new THREE.ShaderMaterial({
     uniforms: {
         time: { value: 0.0 },
+        uBaseColor: { value: baseColor },
+        uAccentColor: { value: accentColor },
+        uSecondColor: { value: secondColor },
     },
     vertexShader,
     fragmentShader,
