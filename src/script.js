@@ -65,6 +65,7 @@ const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
 })
 
 ///???
+// Research
 const cubeCamera = new THREE.CubeCamera(0.1, 10, cubeRenderTarget)
 
 // Large Sphere
